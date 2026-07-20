@@ -1,129 +1,71 @@
-***MUST EDIT***
-# Zillow Housing Price Prediction Project
+## NEED TO EDIT SEE REPORT
 
-## Overview
+# Predicting Home Tax-Assessed Value with Ensemble Regression (Zillow Dataset)
 
-This project applies machine learning techniques to predict property values using a subset of the Zillow housing dataset. The goal is to predict the assessed tax value (`taxvaluedollarcnt`) of properties based on available property characteristics and to investigate how data cleaning, feature engineering, feature selection, and model tuning affect predictive performance.
+Predicting a home's tax-assessed value (`taxvaluedollarcnt`) from property characteristics, using a 77,613-row, 55-feature subset of the Zillow "Zestimate" dataset (Kaggle, 2017). Built as a group project for a Machine Learning Fundamentals course; this repo documents the full workflow from raw data to a tuned ensemble model.
 
-This project was completed as part of a Machine Learning Fundamentals course and follows a structured data science workflow:
+**My contribution:** *(fill in — e.g., "led feature selection and hyperparameter tuning for the Bagging and Random Forest models; built the validation-curve analysis in Fig. 1")*
 
-1. Understanding and exploring the dataset
-2. Cleaning and preparing the data
-3. Exploring feature relationships
-4. Engineering new features
-5. Building and evaluating machine learning models
-6. Selecting and tuning the best-performing model
+## Results
 
-## Dataset
+| Model | Mean CV RMSE | Std. RMSE | Notes |
+|---|---|---|---|
+| Decision Tree Regressor | $608,789 | $26,989 | Baseline; overfit, no tuning |
+| Gradient Boosting Regressor | $450,328 | $20,579 | Baseline |
+| Random Forest Regressor | $445,518 | $20,298 | Baseline; best of the initial 7 models |
+| **Bagging Regressor (tuned)** | **$437,636 → $414,148*** | — | Final model, after feature engineering + hyperparameter tuning |
 
-The dataset is a smaller version of the Zillow housing dataset originally used in the Zillow Prize Kaggle competition.
+\* *Further reduced to ~$414K–$416K CV RMSE after revisiting Milestone 1 cleaning decisions (removing 199 duplicate parcel IDs, loosening the null-value drop threshold from 20% to 40%).*
 
-The target variable is:
+RMSE was chosen over MSE specifically so error stays interpretable in dollars — a $437K RMSE is a business-legible number in a way squared error isn't.
 
-* `taxvaluedollarcnt` — assessed tax value of the property
+**Key finding:** engineered features didn't move the needle much — `calculatedfinishedsquarefeet`, its squared term, and `finishedsquarefeet12` were consistently the top predictors across models, and they largely share variance rather than add independent signal. That's a useful negative result: more engineered features ≠ automatically better in a low-feature-count regime.
 
-The dataset contains property characteristics such as:
-
-* Square footage
-* Number of bedrooms and bathrooms
-* Year built
-* Lot size
-* Room counts
-* Other property descriptors
-
-The dataset includes missing values, outliers, and features with varying usefulness, requiring preprocessing before modeling.
-
-## Project Structure
+## What's in this repo
 
 ```
-Group_Project_Zillow_Housing_Dataset/
-│
+├── Project_Milestone_One_Zillow_EDA/          # EDA, cleaning, imputation, feature relationships
+├── Project_Milestone_Two_Modeling_Feature_Engineering/  # Baseline models, feature engineering, feature selection
+├── Zillow_Final_Report/                       # Final model + full technical report
+├── Zillow_Housing_Project_Presentation/        # Non-technical summary deck (PDF)
 ├── Diagrams/
-│
-├── Project_Milestone_One_Zillow_EDA/
-│   └── Exploratory data analysis and initial data preparation
-│
-├── Project_Milestone_Two_Modeling_Feature_Engineering/
-│   └── Model comparison, feature engineering, and optimization
-│
-├── Zillow_Final_Report/
-│   └── Final technical report and project conclusions
-│
-├── Zillow_Housing_Project_Presentation/
-│   └── Final presentation PDF
-│
-├── zillow_cleaned.csv
-│   └── Cleaned dataset used for modeling
-│
+├── zillow_cleaned.csv                          # Cleaned dataset used for modeling
 └── README.md
 ```
 
-## Milestone 1: Data Exploration and Preparation
+## Methodology
 
-The first milestone focused on understanding the dataset and preparing it for modeling.
+**Data cleaning**
+- Dropped 199 duplicate parcel IDs (verified as true duplicates, not distinct records)
+- Dropped 35 rows with a missing target value — imputing the label itself would have manufactured fake variance in the thing we're trying to predict
+- Dropped features with >20% missing values (later revisited to 40% as a tuning experiment, which improved final RMSE)
+- Dropped non-regressable / redundant columns: raw IDs, free-text fields, lat/long (unusable without geospatial encoding), and categorical fields with too few observations per group to be statistically meaningful
+- Median imputation for numeric features, mode for categorical — median was chosen specifically because most numeric features were heavily right-skewed with outliers, where mean imputation would have distorted the distribution
 
-Work completed:
+**Feature engineering & selection**
+- Log-transformed `yearbuilt` to reduce skew — improved RMSE modestly across nearly all 7 models and reduced variance in most
+- Interaction term: bedroom count × bathroom count
+- Polynomial feature: `calculatedfinishedsquarefeet²`
+- Feature selection via `SequentialFeatureSelector` (forward/backward) and univariate F-statistics (`f_regression`), cross-checked against each other
+- Correlation analysis surfaced expected collinearity (e.g., 0.99 between full-bath count and calculated bathroom count) and confirmed `calculatedfinishedsquarefeet` (r = 0.61) and bathroom count (r = 0.51) as the strongest single predictors of tax value
 
-* Loaded and examined the Zillow dataset
-* Performed exploratory data analysis (EDA)
-* Investigated feature distributions and outliers
-* Analyzed missing values
-* Removed unsuitable features
-* Imputed missing values
-* Investigated feature relationships using correlations and feature selection methods
-* Explored possible feature engineering approaches
+**Modeling**
+- Evaluated 7 regression algorithms: Linear, Lasso, Decision Tree, Random Forest, Gradient Boosting, and Bagging Regressor, among others
+- Model comparison via repeated k-fold cross-validation, tracking both mean and standard deviation of RMSE (a low mean with high variance is not a reliable model)
+- Hyperparameter tuning via `GridSearchCV` / `RandomizedSearchCV`, guided by validation curves for parameters like `n_estimators`, `max_samples`, and `max_features` — plotting train vs. validation RMSE and its std. dev. side by side to catch overfitting before committing to a grid search range, which kept tuning runtimes down
+- Final model: **Bagging Regressor** — narrowly outperformed Random Forest and Gradient Boosting on RMSE while being more interpretable
 
-## Milestone 2: Modeling and Feature Engineering
+## Tools
+Python · Pandas · NumPy · Scikit-learn (ensemble methods, `GridSearchCV`/`RandomizedSearchCV`, `SequentialFeatureSelector`) · Matplotlib · Seaborn · Jupyter
 
-The second milestone focused on developing predictive models and improving performance.
+## Limitations & possible extensions
+- Hyperparameter tuning across 3 ensemble models was computationally expensive — a real constraint on iteration speed
+- No geospatial modeling despite location clearly mattering for home value; lat/long were dropped rather than properly encoded
+- No external data sources (school ratings, crime rates, local market trends) that likely explain variance the current features can't capture
+- *(If extending independently)*: this is a natural place to add SHAP-based feature importance, try LightGBM/XGBoost, or build a small geospatial feature (e.g., distance to city center, ZIP-level median price) as a follow-up
 
-Work completed:
+## Team
+*(Add team member names here)*
 
-* Established baseline regression models
-* Tested different machine learning algorithms
-* Evaluated models using performance metrics
-* Applied feature engineering techniques
-* Investigated feature selection methods
-* Tuned promising models to improve predictive accuracy
-
-## Final Report
-
-The final report summarizes:
-
-* The selected final model
-* Data preparation decisions
-* Feature engineering choices
-* Model evaluation results
-* Lessons learned and possible improvements
-
-## Presentation
-
-The final presentation provides a simplified overview of the project for a general audience, focusing on:
-
-* The problem being solved
-* Dataset insights
-* Modeling approach
-* Results and conclusions
-
-## Team Members
-
-(Add team member names here)
-
-## Tools and Technologies
-
-The project uses:
-
-* Python
-* Pandas
-* NumPy
-* Matplotlib
-* Seaborn
-* Scikit-learn
-* Jupyter Notebook
-
-## Conclusion
-
-This project demonstrates the end-to-end machine learning workflow for a real-world housing prediction problem, including data exploration, preprocessing, feature engineering, model development, and evaluation.
-
-
-This repository contains homeworks posted for student downloads in Module 3 of DS 603 in Spring 2025. 
+---
+*Completed as part of DS 603, Spring 2025.*
