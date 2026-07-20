@@ -1,8 +1,11 @@
+## NEED 2 EDIT 
+
 # Module 3: Machine Learning Fundamentals
 
-This repository contains coursework and projects completed for the Machine Learning Fundamentals course, part of my Master's in Data Science at Boston University. specifically, it includes individual homework assignments and a group project predicting home tax-assessed value on a 77,613-row subset of the Zillow housing dataset.
+This repository contains coursework and projects completed for the Machine Learning Fundamentals course, part of my Master's in Data Science at Boston University. Specifically, it includes individual homework assignments and a group project predicting home tax-assessed value based a collection of 55 features and using 77,613 entries of the Zillow housing dataset.
 
-**Highlight:** the group project's final tuned model (Bagging Regressor) improved RMSE from a $608K baseline (untuned Decision Tree) down to ~$414K–$437K through feature engineering, feature selection, and hyperparameter tuning guided by validation curves. → [Full writeup and results](./Group_Project_Zillow_Housing_Dataset/README.md)
+**Highlight:** The group project's final tuned model (Bagging Regressor) improved RMSE from a $462,458.49 baseline (untuned Decision Tree) down to ~$414K–$437K through feature engineering, feature selection, and hyperparameter tuning guided by validation curves. → [Full writeup and results](./Group_Project_Zillow_Housing_Dataset/README.md)
+
 
 This work demonstrates practical experience with:
 - Data exploration and visualization
