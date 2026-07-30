@@ -58,7 +58,6 @@ Python · Pandas · NumPy · Scikit-learn (ensemble methods, `GridSearchCV`/`Ran
 - Hyperparameter tuning across 3 ensemble models was computationally expensive — a real constraint on iteration speed
 - No geospatial modeling despite location clearly mattering for home value; lat/long were dropped rather than properly encoded
 - No external data sources (school ratings, crime rates, local market trends) that likely explain variance the current features can't capture
-- *(If extending independently)*: this is a natural place to add SHAP-based feature importance, try LightGBM/XGBoost, or build a small geospatial feature (e.g., distance to city center, ZIP-level median price) as a follow-up
 
 ---
 *Completed as part of DS 603, Spring 2025.*
