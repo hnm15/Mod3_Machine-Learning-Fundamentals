@@ -1,10 +1,6 @@
-## NEED TO EDIT SEE REPORT
-
 # Predicting Home Tax-Assessed Value with Ensemble Regression (Zillow Dataset)
 
 Predicting a home's tax-assessed value (`taxvaluedollarcnt`) from property characteristics, using a 77,613-row, 55-feature subset of the Zillow "Zestimate" dataset (Kaggle, 2017). Built as a group project for a Machine Learning Fundamentals course; this repo documents the full workflow from raw data to a tuned ensemble model.
-
-**My contribution:** *(fill in — e.g., "led feature selection and hyperparameter tuning for the Bagging and Random Forest models; built the validation-curve analysis in Fig. 1")*
 
 ## Results
 
