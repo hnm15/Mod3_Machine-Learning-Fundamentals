@@ -35,8 +35,6 @@ Individual assignments completed throughout the course. Topics covered:
 - Decision tree models
 - Model evaluation using performance metrics
 
-*(Note: double check this list against what's actually in the folder before publishing — swap in the real assignment titles if they differ from the general topics above.)*
-
 ## [Group Project: Zillow Housing Price Prediction](./Group_Project_Zillow_Housing_Dataset)
 
 A team project using the Zillow housing dataset, following the full ML workflow:
@@ -56,8 +54,6 @@ See the [project README](./Group_Project_Zillow_Housing_Dataset/README.md) for t
 pip install -r requirements.txt
 jupyter lab
 ```
-
-*(Verify `requirements.txt` exists in the repo root before publishing this — if it's missing, generate one with `pip freeze > requirements.txt` from your project's environment, or I can build one from the notebook imports.)*
 
 ## Purpose
 
