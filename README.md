@@ -1,5 +1,3 @@
-## NEED 2 EDIT 
-
 # Module 3: Machine Learning Fundamentals
 
 This repository contains coursework and projects completed for the Machine Learning Fundamentals course, part of my Master's in Data Science at Boston University. Specifically, it includes individual homework assignments and a group project predicting home tax-assessed value based a collection of 55 features and using 77,613 entries of the Zillow housing dataset.
