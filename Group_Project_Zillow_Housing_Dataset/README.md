@@ -60,8 +60,5 @@ Python · Pandas · NumPy · Scikit-learn (ensemble methods, `GridSearchCV`/`Ran
 - No external data sources (school ratings, crime rates, local market trends) that likely explain variance the current features can't capture
 - *(If extending independently)*: this is a natural place to add SHAP-based feature importance, try LightGBM/XGBoost, or build a small geospatial feature (e.g., distance to city center, ZIP-level median price) as a follow-up
 
-## Team
-*(Add team member names here)*
-
 ---
 *Completed as part of DS 603, Spring 2025.*
